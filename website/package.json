@@ -5,7 +5,7 @@
   "author": "HashiCorp",
   "dependencies": {
     "@hashicorp/mktg-global-styles": "^4.0.0",
-    "@hashicorp/platform-code-highlighting": "^0.1.1",
+    "@hashicorp/platform-code-highlighting": "^0.1.2",
     "@hashicorp/platform-runtime-error-monitoring": "^0.1.0",
     "@hashicorp/platform-util": "^0.1.0",
     "@hashicorp/react-alert-banner": "^7.0.1",
@@ -13,7 +13,7 @@
     "@hashicorp/react-command-line-terminal": "^2.0.4",
     "@hashicorp/react-consent-manager": "^7.0.1",
     "@hashicorp/react-content": "^8.0.2",
-    "@hashicorp/react-docs-page": "^14.2.3",
+    "@hashicorp/react-docs-page": "^14.2.5-canary-202182303533",
     "@hashicorp/react-hashi-stack-menu": "^2.0.7",
     "@hashicorp/react-head": "^3.1.2",
     "@hashicorp/react-image": "^4.0.3",
