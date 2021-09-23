@@ -1,10 +1,11 @@
+import { clickable, collection, create, fillable, isPresent, text } from 'ember-cli-page-object';
 import { module, test } from 'qunit';
-import { setupRenderingTest } from 'ember-qunit';
-import { setupMirage } from 'ember-cli-mirage/test-support';
-import { render, settled } from '@ember/test-helpers';
+import { pauseTest, render, settled } from '@ember/test-helpers';
+
 import { TestContext } from 'ember-test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { create, collection, clickable, isPresent, fillable, text } from 'ember-cli-page-object';
+import { setupMirage } from 'ember-cli-mirage/test-support';
+import { setupRenderingTest } from 'ember-qunit';
 
 const page = create({
   hasForm: isPresent('[data-test-config-variables-form]'),
@@ -112,5 +113,10 @@ module('Integration | Component | project-config-variables-list', function (hook
     await page.variablesList.objectAt(0).dropdown();
     assert.ok(page.variablesList.objectAt(0).hasDropDownEdit, 'Static Variable is editable');
     assert.notOk(page.variablesList.objectAt(3).hasDropDown, 'Dynamic Variable is not editable or deletable');
+    await page.variablesList.objectAt(0).dropdownEdit();
+    await page.varStatic('foozbarz');
+    await page.saveButton();
+    await settled(); // TODO(jgwhite): Figure out why we need this
+    assert.notOk(page.hasForm, 'Create Variable: the form disappears after creation');
   });
 });

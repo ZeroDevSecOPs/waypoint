@@ -1,12 +1,13 @@
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { ConfigVar, Project } from 'waypoint-pb';
-import { inject as service } from '@ember/service';
+
+import ApiService from 'waypoint/services/api';
 import { BufferedChangeset } from 'ember-changeset/types';
 import { Changeset } from 'ember-changeset';
-import ApiService from 'waypoint/services/api';
+import Component from '@glimmer/component';
 import FlashMessagesService from 'waypoint/services/pds-flash-messages';
+import { action } from '@ember/object';
+import { inject as service } from '@ember/service';
+import { tracked } from '@glimmer/tracking';
 
 interface VariableArgs {
   variable: ConfigVar.AsObject;
@@ -68,6 +69,7 @@ export default class ProjectConfigVariablesListItemComponent extends Component<V
       return;
     }
     await this.args.saveVariableSettings(this.changeset, false);
+    this.changeset?.execute();
     this.isCreating = false;
     this.isEditing = false;
   }
@@ -83,6 +85,7 @@ export default class ProjectConfigVariablesListItemComponent extends Component<V
   cancelEdit(): void {
     this.isCreating = false;
     this.isEditing = false;
-    this.variable = this.initialVariable;
+    this.changeset?.unexecute();
+    // this.variable = this.initialVariable;
   }
 }
