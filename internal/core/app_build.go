@@ -2,6 +2,7 @@ package core
 
 import (
 	"context"
+	"errors"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/any"
@@ -167,7 +168,13 @@ func (op *buildOperation) Do(ctx context.Context, log hclog.Logger, app *App, _ 
 					// ... which we make available to build plugin.
 					args = append(args, plugin.ArgNamedAny("access_info", any))
 					log.Debug("injected access info")
+				} else {
+					log.Error("unexpected response type from callDynamicFunc", "type", hclog.Fmt("%T", raw))
+					return nil, errors.New("AccessInfoFunc didn't provide a typed any")
 				}
+			} else {
+				log.Error("error calling dynamic func", "error", err)
+				return nil, err
 			}
 		}
 	}
@@ -185,13 +192,13 @@ func (op *buildOperation) StatusPtr(msg proto.Message) **pb.Status {
 	return &(msg.(*pb.Build).Status)
 }
 
-func (op *buildOperation) ValuePtr(msg proto.Message) **any.Any {
+func (op *buildOperation) ValuePtr(msg proto.Message) (**any.Any, *string) {
 	v := msg.(*pb.Build)
 	if v.Artifact == nil {
 		v.Artifact = &pb.Artifact{}
 	}
 
-	return &v.Artifact.Artifact
+	return &v.Artifact.Artifact, &v.Artifact.ArtifactJson
 }
 
 var _ operation = (*buildOperation)(nil)

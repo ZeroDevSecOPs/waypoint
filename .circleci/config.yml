@@ -6,7 +6,7 @@ references:
     go: &GOLANG_IMAGE docker.mirror.hashicorp.services/circleci/golang:1.16
     middleman: &MIDDLEMAN_IMAGE docker.mirror.hashicorp.services/hashicorp/middleman-hashicorp:0.3.44
     ember: &EMBER_IMAGE docker.mirror.hashicorp.services/circleci/node:12-browsers
-    website: &WEBSITE_IMAGE docker.mirror.hashicorp.services/node:node:14
+    website: &WEBSITE_IMAGE docker.mirror.hashicorp.services/node:14
 
   paths:
     test-results: &TEST_RESULTS_DIR /tmp/test-results
@@ -444,6 +444,22 @@ jobs:
       - store_test_results:
           path: ui/test-results
 
+  # run frontend linters
+  frontend-lint:
+    docker:
+      - image: *EMBER_IMAGE
+    environment:
+      <<: *ENVIRONMENT
+    steps:
+      - checkout
+      - md5uilib
+      - restore_cache:
+          key: *YARN_CACHE_KEY
+      - run:
+          working_directory: ui
+          command: yarn lint
+      - notify_main_failure
+
 workflows:
   version: 2
   go-tests:
@@ -529,9 +545,12 @@ workflows:
   frontend:
     jobs:
       - frontend-cache
-      - ember-build-tests:
+      - frontend-lint:
           requires:
             - frontend-cache
+      - ember-build-tests:
+          requires:
+            - frontend-lint
       - ember-test:
           requires:
             - ember-build-tests
