@@ -1273,7 +1273,7 @@ type Config struct {
 	ServicePort uint `hcl:"service_port,optional"`
 
 	// Environment variables that are meant to configure the application in a static
-	// way. This might be control an image that has mulitple modes of operation,
+	// way. This might be control an image that has multiple modes of operation,
 	// selected via environment variable. Most configuration should use the waypoint
 	// config commands.
 	StaticEnvVars map[string]string `hcl:"static_environment,optional"`
